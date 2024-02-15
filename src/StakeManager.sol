@@ -150,6 +150,7 @@ contract StakeManager is
         uint256 amount = staker.deposit;
         staker.deposit = 0;
         staker.unstakeTimestamp = 0;
+        staker.role = ROLES.NONE;
         (bool success, ) = payable(msg.sender).call{value: amount}("");
         if (!success) revert StakeManager__WithdrawalFailed();
     }
