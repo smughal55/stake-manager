@@ -20,6 +20,7 @@ contract StakeManager is
     // Errors
     ///////////////////
     error StakeManager__SenderMustHaveTheRequiredRole();
+    error StakeManager__ConfigNotSet();
     error StakeManager__InvalidDepositAmount();
     error StakeManager__InvalidWaitTime();
     error StakeManager__AlreadyRegistered();
@@ -107,6 +108,7 @@ contract StakeManager is
 
     /// @inheritdoc IStakeManager
     function register() external payable override {
+        if (registrationDepositAmount == 0) revert StakeManager__ConfigNotSet();
         Staker storage staker = stakers[msg.sender];
         if (staker.role != ROLES.NONE) revert StakeManager__AlreadyRegistered();
         if (msg.value != registrationDepositAmount)
