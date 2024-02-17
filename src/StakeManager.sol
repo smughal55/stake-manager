@@ -20,6 +20,7 @@ contract StakeManager is
     // Errors
     ///////////////////
     error StakeManager__SenderMustHaveTheRequiredRole();
+    error StakeManager__CannotUnregisterAdmin();
     error StakeManager__ConfigNotSet();
     error StakeManager__InvalidDepositAmount();
     error StakeManager__InvalidWaitTime();
@@ -120,6 +121,8 @@ contract StakeManager is
     /// @inheritdoc IStakeManager
     function unregister() external override {
         Staker storage staker = stakers[msg.sender];
+        if (staker.role == ROLES.ADMIN_ROLE)
+            revert StakeManager__CannotUnregisterAdmin();
         if (staker.deposit != 0)
             revert StakeManager__CannotUnregisterWithPositiveDeposit();
         staker.role = ROLES.NONE;
